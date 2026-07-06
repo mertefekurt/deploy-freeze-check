@@ -1,16 +1,27 @@
-# deploy-freeze-check
+<img src="assets/readme-cover.svg" alt="Deploy Freeze Check cover" width="100%" />
 
-**Evaluator Format.** Check deployment plans for freeze windows, approvals, and rollback readiness.
+# Deploy Freeze Check
 
-## Objective
+Check deployment plans for freeze windows, approvals, and rollback readiness.
 
-Deployments during risky windows need explicit controls. This CLI flags release plans that lack approval or rollback coverage.
+![stack](https://img.shields.io/badge/stack-Python-be185d?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-4b5563?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-2563eb?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-16a34a?style=flat-square)
 
-## Evaluation Criteria
+## Workflow
 
-`deploy-freeze-check` accepts deployment plan, release calendar, or change request text in text, JSON, JSONL, or CSV form.
+1. Collect the review notes or exported records.
+2. Run `deploy-freeze-check` against the file.
+3. Read the findings in Markdown, or switch to JSON for automation.
+4. Fail CI only at the severity level you care about.
 
-## Commands
+## Checks
+
+| Rule | Severity | What it catches |
+| --- | --- | --- |
+| `freeze-active` | high | deployment overlaps a freeze window |
+| `missing-approval` | medium | approval is missing |
+| `unknown-rollback` | low | rollback readiness is unclear |
+
+## Command line
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -18,30 +29,19 @@ deploy-freeze-check examples/sample.txt
 deploy-freeze-check examples/sample.txt --json --fail-on medium
 ```
 
-## Artifacts
-
-| Rule | Severity | Meaning |
-|---|---:|---|
-| `freeze-active` | high | deployment overlaps a freeze window |
-| `missing-approval` | medium | approval is missing |
-| `unknown-rollback` | low | rollback readiness is unclear |
-
-## License
-
-```bash
-ruff check .
-pytest
-python -m deploy_freeze_check --help
-```
-
-License: MIT
-
-### Example Input
+## Sample risky input
 
 ```text
 deploy friday 18:00 freeze active approval missing rollback unknown
 ```
 
-### Architecture
+## Project shape
 
-`cli.py` reads files, `core.py` evaluates records, and `rules.py` keeps the deploy-freeze-check policy surface explicit.
+```text
+.github/        CI workflow
+examples/       sample inputs
+src/            package source
+tests/          test coverage
+.gitignore      project file
+pyproject.toml  package metadata
+```
