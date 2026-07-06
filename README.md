@@ -1,33 +1,33 @@
 # Deploy Freeze Check
 
-Check deployment plans for freeze windows, approvals, and rollback readiness. The idea is simple: give Deploy Freeze Check the local file or fixture, get a readable result, and decide what needs attention before the next handoff.
+![Deploy Freeze Check cover](assets/readme-cover.svg)
 
-## Project card
+Check deployment plans for freeze windows, approvals, and rollback readiness.
 
-<img src="assets/readme-cover.svg" alt="Deploy Freeze Check cover" width="100%" />
+## Example lines
 
-| Detail | Value |
-| --- | --- |
-| Area | delivery and infrastructure |
-| Command | `deploy-freeze-check` |
-| Example | `examples/sample.txt` |
+```text
+risky: deploy friday 18:00 freeze active approval missing rollback unknown
+clean: deploy tuesday 10:00 freeze clear approval change-board rollback documented
+```
 
-## What would make me stop a review
+## Review notes
 
-| Stopper | Level | Why it matters |
-| --- | --- | --- |
-| `freeze-active` | high | deployment overlaps a freeze window |
-| `missing-approval` | medium | approval is missing |
-| `unknown-rollback` | low | rollback readiness is unclear |
+| Signal | Level | What it flags | Fix direction |
+| --- | --- | --- | --- |
+| `freeze-active` | high | deployment overlaps a freeze window | Get exception approval or reschedule. |
+| `missing-approval` | medium | approval is missing | Record approver and change ticket. |
+| `unknown-rollback` | low | rollback readiness is unclear | Attach rollback plan and owner. |
 
-## Run from a fresh clone
+## Finding map
+
+![Workflow diagram](assets/readme-diagram.svg)
+
+## Try the fixture
 
 ```bash
 git clone https://github.com/mertefekurt/deploy-freeze-check.git
 cd deploy-freeze-check
-python -m venv .venv
-source .venv/bin/activate
 python -m pip install -e ".[dev]"
 deploy-freeze-check examples/sample.txt
-deploy-freeze-check examples/sample.txt --json
 ```
